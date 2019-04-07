@@ -17,6 +17,8 @@ public class FirstActivity extends AppCompatActivity {
 
         signIn = findViewById(R.id.button);
         signUp = findViewById(R.id.signUp);
+
+
         signUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -25,11 +27,14 @@ public class FirstActivity extends AppCompatActivity {
 
             }
         });
+
+
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //openMapActivity();
-                openBusList();
+                gotoLoginPage();
+                //openBusList();
             }
         }
 
@@ -42,10 +47,15 @@ public class FirstActivity extends AppCompatActivity {
         startActivity(intent);
     }*/
 
-    public void openBusList(){
-        Intent intent = new Intent(this,BusList.class);
+
+    private void gotoLoginPage() {
+
+        Intent intent;
+        intent = new Intent(this,Login.class);
         startActivity(intent);
     }
+
+
 
     public void openSignUpPage()
     {

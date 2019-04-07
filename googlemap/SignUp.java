@@ -1,5 +1,6 @@
 package com.example.googlemap;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,6 +32,7 @@ public class SignUp extends AppCompatActivity {
     private EditText pswd;
     private EditText pswd2;
     private Button submit;
+    private boolean flag;
 
 
     @Override
@@ -57,6 +59,8 @@ public class SignUp extends AppCompatActivity {
                 Pswd = pswd.getText().toString();
                 Pswd2 = pswd2.getText().toString();
 
+
+               // Toast.makeText(SignUp.this,"Check your Password"+Name,Toast.LENGTH_SHORT).show();
                 if(!Pswd.equals(Pswd2))
                 {
                     Toast.makeText(SignUp.this,"Check your Password",Toast.LENGTH_SHORT).show();
@@ -67,13 +71,25 @@ public class SignUp extends AppCompatActivity {
                 {
                     SignUpPost signUpPost= new SignUpPost(Name,Dept,UserName,Pswd);
                     callPost(signUpPost);
+
                 }
             }
+
+
+
+
         });
 
     }
 
-    public void callPost(SignUpPost signUpPost){
+    private void gotoLoginPage() {
+
+        Intent intent;
+        intent = new Intent(this,Login.class);
+        startActivity(intent);
+    }
+
+    public boolean callPost(SignUpPost signUpPost){
 
      //   "http://52.29.113.22/rakib/"
     //"http://127.0.0.1:4000/"
@@ -92,15 +108,19 @@ public class SignUp extends AppCompatActivity {
             @Override
             public void onResponse(Call<SignUpPost> call, Response<SignUpPost> response) {
                 Toast.makeText(SignUp.this, " Yes Yes !right"+response.body(),Toast.LENGTH_SHORT).show();
+                flag=true;
+                gotoLoginPage();
             }
 
             @Override
             public void onFailure(Call<SignUpPost> call, Throwable t) {
                 Toast.makeText(SignUp.this, "Something went wrong",Toast.LENGTH_SHORT).show();
+                flag=false;
             }
         });
 
 
-
+            if(flag) return true;
+            else return false;
     }
 }
