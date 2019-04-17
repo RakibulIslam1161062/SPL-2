@@ -2,14 +2,25 @@ package com.example.googlemap;
 
 
 import android.Manifest;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -17,6 +28,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
@@ -33,6 +46,10 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -44,10 +61,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+
+    Handler mHandler;
     private GoogleMap mMap;
     private static final int LOCATION_REQUEST = 500;
     ArrayList<LatLng> listPoints;
+    double lat=0.9920,lon=0.222;
 
+    double l1=23.00,l2=90.343;
 
 
     @Override
@@ -58,8 +79,30 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+
+
+
+        this.mHandler = new Handler();
+        m_Runnable.run();
+
         listPoints = new ArrayList<>();
     }
+
+    private final Runnable m_Runnable = new Runnable()
+    {
+        public void run()
+
+        {
+            getDbData();
+           // Toast.makeText(MapsActivity.this,"in runnable",Toast.LENGTH_SHORT).show();
+
+            MapsActivity.this.mHandler.postDelayed(m_Runnable,10000);
+        }
+
+    };
+
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -68,31 +111,70 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST);
-            return;
-        }
+        return;
+    }
         mMap.setMyLocationEnabled(true);
-        getDbData();
+
+
+
+            getDbData();
+            geoFence();
+
+
+
+
+       // Toast.makeText(MapsActivity.this,"here is "+destination,Toast.LENGTH_SHORT).show();
+
 
 
 
     }
 
 
-     /*
+
+    @Override
+    public void onResume(){
+        super.onResume();
+
+        if(mMap != null){ //prevent crashing if the map doesn't exist yet (eg. on starting activity)
+            mMap.clear();
+
+            getDbData();
+
+            // add markers from database to the map
+        }
+    }
+
+
+
+    public void geoFence(){
+
+
+
+
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                if(listPoints.size()==2){
+                if(listPoints.size()==1){
                     listPoints.clear();
                     mMap.clear();
                 }
                 listPoints.add(latLng);
+               lat= latLng.latitude;
+               lon= latLng.longitude;
 
                 MarkerOptions markerOptions = new MarkerOptions();
                 markerOptions.position(latLng);
 
                 if(listPoints.size()==1){
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                    CircleOptions circleOptions = new CircleOptions()
+                            .strokeColor(Color.BLACK) //Outer black border
+                            .fillColor(Color.TRANSPARENT) //inside of the geofence will be transparent, change to whatever color you prefer like 0x88ff0000 for mid-transparent red
+                            .center(latLng) // the LatLng Object of your geofence location
+                            .radius(500); // The radius (in meters) of your geofence
+
+                    Circle circle = mMap.addCircle(circleOptions);
                 }
                 else{
                     markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
@@ -100,19 +182,71 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 mMap.addMarker(markerOptions);
 
+
+                Button btn = findViewById(R.id.btn);
+                btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+
+                        Location myLocation = mMap.getMyLocation();
+                         l1 = myLocation.getLatitude();
+                         l2 = myLocation.getLongitude();
+
+                         destinationAlert(l1,l2,lat,lon);
+
+
+                       // Toast.makeText(MapsActivity.this,"here"+l+" "+l2,Toast.LENGTH_LONG).show();
+                    }
+                });
+
+
                 //todo: request getDirectionCode
 
-                if(listPoints.size()== 2){
+              /*  if(listPoints.size()== 2){
                     //createURL
                     String url =  getRequestURL(listPoints.get(0),listPoints.get(1));
 
                     TaskRequestDirections taskRequestDirections = new TaskRequestDirections();
                     taskRequestDirections.execute(url);
                 }
+                */
             }
         });
-        */
 
+
+
+    }
+
+    public void destinationAlert(double lat1,double lon1,double lat2,double lon2){
+
+        float[] results = new float[1];
+        Location.distanceBetween( lat1,lon1, lat2, lon2, results);
+        float distanceInMeters = results[0];
+        boolean isWithin10km = distanceInMeters < 10000;
+        if(isWithin10km)
+        {
+            Toast.makeText(MapsActivity.this,"here is 10 km",Toast.LENGTH_SHORT).show();
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+
+
+            //shared Preference Data
+
+
+
+
+
+
+
+
+        }
+
+        else
+            Toast.makeText(MapsActivity.this,"here is no",Toast.LENGTH_SHORT).show();
+    }
 
 
     private String getRequestURL(LatLng origin, LatLng dest) {
@@ -309,7 +443,54 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     markerOptions.title(latlonList.getLat() + " : " + latlonList.getLon());
                     mMap.clear();
                     mMap.animateCamera(CameraUpdateFactory.newLatLng(myLatLng));
-                    mMap.addMarker(markerOptions);
+
+
+                   // public void getAddress(double lat, double lng) {
+                        Geocoder geocoder = new Geocoder(MapsActivity.this, Locale.getDefault());
+                        try {
+                            List<Address> addresses = geocoder.getFromLocation(latlonList.getLat(), latlonList.getLon(), 1);
+                            Address obj = addresses.get(0);
+                            String add = obj.getAddressLine(0);
+//                            add = add + "\n" + obj.getCountryName();
+//                            add = add + "\n" + obj.getCountryCode();
+//                            add = add + "\n" + obj.getAdminArea();
+//                            add = add + "\n" + obj.getPostalCode();
+//                            add = add + "\n" + obj.getSubAdminArea();
+                            add = add + "\n" + obj.getLocality();
+                            add = add + "\n" + obj.getSubThoroughfare();
+
+//                            markerOptions.showInfoWindow();
+
+                            mMap.addMarker(markerOptions.title(add)).showInfoWindow();
+
+
+                          //  Log.v("IGA", "Address" + add);
+                            // Toast.makeText(MapsActivity.this, "Address=>" + add,Toast.LENGTH_SHORT).show();
+
+
+                            // TennisAppActivity.showDialog(add);
+                        } catch (IOException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                            //Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+
+
+
+                        //text
+
+
+
+
+
+
+                    CircleOptions circleOptions = new CircleOptions()
+                            .strokeColor(Color.BLACK) //Outer black border
+                            .fillColor(Color.TRANSPARENT) //inside of the geofence will be transparent, change to whatever color you prefer like 0x88ff0000 for mid-transparent red
+                            .center(myLatLng) // the LatLng Object of your geofence location
+                            .radius(500); // The radius (in meters) of your geofence
+
+                   // Circle circle = mMap.addCircle(circleOptions);
 
                     //String url = getRequestURL(listPoints.get(0), listPoints.get(listPoints.size() - 1));
 

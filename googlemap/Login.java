@@ -1,6 +1,7 @@
 package com.example.googlemap;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.googlemap.FirstActivity.MY_PREFS_NAME;
 
 public class Login extends AppCompatActivity {
 
@@ -29,6 +32,9 @@ public class Login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
 
+
+
+
         pswd = (EditText) findViewById(R.id.pswd3);
         userName = (EditText) findViewById(R.id.userName3);
         login =(Button)  findViewById(R.id.login);
@@ -38,6 +44,10 @@ public class Login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
+
                 String Pswd, UserName;
                 Pswd = pswd.getText().toString();
                 UserName = userName.getText().toString();
