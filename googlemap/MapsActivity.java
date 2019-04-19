@@ -2,6 +2,7 @@ package com.example.googlemap;
 
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -17,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -62,6 +64,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
 
+    public static final String locationPref= "MyPrefsFile";
     Handler mHandler;
     private GoogleMap mMap;
     private static final int LOCATION_REQUEST = 500;
@@ -118,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
             getDbData();
-            geoFence();
+           geoFence();
 
 
 
@@ -219,33 +222,89 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void destinationAlert(double lat1,double lon1,double lat2,double lon2){
+    public void destinationAlert(double lat1,double lon1,double lat2,double lon2) {
 
         float[] results = new float[1];
-        Location.distanceBetween( lat1,lon1, lat2, lon2, results);
+        Location.distanceBetween(lat1, lon1, lat2, lon2, results);
         float distanceInMeters = results[0];
         boolean isWithin10km = distanceInMeters < 10000;
+
+        long l1, l2, l3, l4;
+
+
+        l1 = (new Double(lat1)).longValue();
+        l2 = (new Double(lon1)).longValue();
+        l3 = (new Double(lat2)).longValue();
+        l4 = (new Double(lon2)).longValue();
+
+
+        SharedPreferences.Editor editor = getSharedPreferences(locationPref, MODE_PRIVATE).edit();
+        editor.putLong("myLat", l1);
+        editor.putLong("myLon", l2);
+        editor.putLong("destLat", l3);
+        editor.putLong("destLon", l4);
+        editor.commit();
+
+
+
+//        SharedPreferences.Editor editor = getSharedPreferences(locationPref, MODE_PRIVATE).edit();
+//        editor.putString("name", "Elena");
+//        editor.putInt("idName", 12);
+//        editor.commit();
+
+
+        String input = "alarm";
+
+        Intent serviceIntent = new Intent(this, ExampleService.class);
+        serviceIntent.putExtra("inputExtra",input);
+
+        startService(serviceIntent);
+
+        ContextCompat.startForegroundService(this, serviceIntent);
+
+
+        //startService(new Intent(this,ExampleService.class));
+
+
+    }
+
+/*
         if(isWithin10km)
         {
             Toast.makeText(MapsActivity.this,"here is 10 km",Toast.LENGTH_SHORT).show();
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
             Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
-
-
             //shared Preference Data
-
-
-
-
-
-
-
 
         }
 
         else
             Toast.makeText(MapsActivity.this,"here is no",Toast.LENGTH_SHORT).show();
+    }
+    */
+
+
+    public void startService(View v){
+
+        Toast.makeText(this,"yes started",Toast.LENGTH_SHORT).show();
+
+        String input = "alarm";
+
+        Intent serviceIntent = new Intent(this, ExampleService.class);
+        serviceIntent.putExtra("inputExtra",input);
+
+        startService(serviceIntent);
+
+        ContextCompat.startForegroundService(this, serviceIntent);
+
+
+    }
+
+    public void stopService(View v) {
+        Intent serviceIntent = new Intent(this, ExampleService.class);
+        stopService(serviceIntent);
+
     }
 
 
