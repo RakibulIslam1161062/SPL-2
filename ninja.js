@@ -13,13 +13,38 @@ const SignUpSchema = new Schema({
   dept: String,
   userName: String,
   password: String
-
-
-
 });
 
-const Ninja = mongoose.model('ninja',NinjaSchema);
-module.exports = Ninja;
+const NotificationSchema = new Schema({
+  busName: String,
+  adminName: String,
+  adminDesig: String,
+  message: String
+});
+
+const AdminSignUpSchema = new Schema({
+  name: String,
+  dept: String,
+  busName: String,
+  userName: String,
+  password: String
+});
+
 
 const SignUp = mongoose.model('account',SignUpSchema);
-module.exports = SignUp;
+
+const AdminSignUp = mongoose.model('adminAccount',AdminSignUpSchema);
+
+const NotificationItem = mongoose.model('notification',NotificationSchema);
+
+
+const Ninja = mongoose.model('ninja',NinjaSchema);
+
+
+module.exports = {
+    Ninja:Ninja,
+    SignUp: SignUp,
+    NotificationItem: NotificationItem,
+    AdminSignUp: AdminSignUp
+
+};
