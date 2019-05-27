@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#b57324"
+    android:orientation="vertical"
+    tools:context=".Login">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <ImageView
+            android:layout_width="214dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="50dp"
+            android:src="@drawable/logo1" />
+
+        <EditText
+            android:id="@+id/userName3"
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:drawableLeft="@drawable/user2"
+            android:drawableStart="@drawable/user2"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:hint="User name"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColorHint="#FFF"/>
+
+
+
+        <EditText
+            android:id="@+id/pswd3"
+            android:layout_marginLeft="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:drawableLeft="@drawable/baseline_lock_white_24dp"
+            android:drawableStart="@drawable/baseline_lock_white_24dp"
+            android:drawablePadding="12dp"
+            android:ems="10"
+            android:hint="@string/hintPass"
+            android:inputType="textPassword"
+            android:maxLines="1"
+            android:padding="8dp"
+            android:textColorHint="#FFF"
+            android:layout_marginTop="20dp"/>
+
+
+
+        <CheckBox
+            android:layout_marginLeft="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textColor="#FFF"
+            android:buttonTint="#FFF"
+            android:textSize="16sp"
+            android:text="@string/check_remember_me"
+            android:padding="8dp"
+            android:id="@+id/remember"
+            android:layout_gravity="start"/>
+
+        <Button
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Base.TextAppearance.AppCompat.Body1"
+            android:layout_marginTop="70dp"
+            android:background="@drawable/background_signup"
+            android:text="@string/btLogin"
+            android:clickable="true"
+            android:padding="16dp"
+            android:textAllCaps="false"
+            android:textColor="#FFF"
+            android:textSize="18sp"/>
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>

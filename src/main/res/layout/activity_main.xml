@@ -1,19 +1,127 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="#b57324"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@color/colorPrimaryDark"
-    >
-<ListView
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/listView"
+    tools:context=".MainActivity">
 
-    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="DU LAAL BUS"
+        android:textSize="50dp"
+        android:textAlignment="center"
+        android:layout_marginTop="30dp"
+        android:textStyle="bold"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat"
+        />
 
-</ListView>
 
-</LinearLayout>
+
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="190dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginTop="100dp"
+        android:src="@drawable/notification"
+        android:id="@+id/notification"
+
+
+
+        />
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:text="Send Notification"
+        android:textAlignment="center"
+        android:layout_marginTop="250dp"
+        android:layout_marginLeft="0dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat"
+        android:textSize="20dp"
+
+        />
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="220dp"
+        android:src="@drawable/deleteuser"
+        android:id="@+id/userList"
+        android:layout_marginTop="80dp"
+        android:layout_marginLeft="200dp"
+
+        />
+    <TextView
+        android:layout_width="200dp"
+        android:layout_height="100dp"
+        android:text="Send Notification"
+        android:textAlignment="center"
+        android:layout_marginTop="270dp"
+        android:layout_marginLeft="180dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat"
+        android:textSize="20dp"
+
+        />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="180dp"
+        android:src="@drawable/removeadmin"
+
+        android:id="@+id/removeAdmin"
+        android:layout_marginTop="320dp"
+        android:layout_marginLeft="195dp"
+
+        />
+    <TextView
+        android:layout_width="170dp"
+        android:layout_height="100dp"
+        android:text="Remove Admin"
+        android:textAlignment="center"
+        android:layout_marginTop="490dp"
+        android:layout_marginLeft="180dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat"
+        android:textSize="20dp"
+
+        />
+
+    <ImageView
+        android:layout_width="150dp"
+        android:layout_height="190dp"
+        android:src="@drawable/addadmin"
+        android:layout_marginLeft="30dp"
+        android:id="@+id/addAdmin"
+
+        android:layout_marginTop="300dp"
+
+
+        />
+    <TextView
+        android:layout_width="170dp"
+        android:layout_height="100dp"
+        android:text="Add Admin"
+        android:textAlignment="center"
+        android:layout_marginTop="480dp"
+        android:layout_marginLeft="0dp"
+        android:textAppearance="@style/Base.TextAppearance.AppCompat"
+        android:textSize="20dp"
+
+        />
+
+
+    <ImageView
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:src="@drawable/exit"
+        android:layout_marginLeft="90dp"
+        android:id="@+id/logout"
+
+
+        android:layout_marginTop="550dp"
+
+
+        />
+
+
+</RelativeLayout>
